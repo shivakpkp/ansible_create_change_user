@@ -1,0 +1,6 @@
+---
+  - name: create a user and change the password
+    hosts: all
+    become: yes
+    roles:
+      - role: create-user

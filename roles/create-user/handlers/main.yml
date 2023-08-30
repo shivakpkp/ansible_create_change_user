@@ -1,0 +1,7 @@
+---
+# handlers file for create-user
+  - name: restart the ssh service
+    service:
+      name: ssh
+      state: restarted
+    listen: restart

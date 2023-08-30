@@ -1,0 +1,29 @@
+---
+# tasks file for create-user
+  - name: create a user
+    shell: sudo adduser {{username}}
+    ignore_errors: true
+  - name: checking sshd_config existence
+    stat:
+      path: /etc/ssh/sshd_config
+    register: file_status
+  - name: change the PasswordAuthentication
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: "#PasswordAuthentication yes"
+      line: "PasswordAuthentication no"
+      state: present
+      backup: yes
+    when: file_status.stat.exists
+    notify: 
+      - restart
+      
+  # - name: add ssh key
+  #   local_action: command ssh-copy-id -i /Users/shiva/.ssh/id_rsa.pub {{username}}@{{ansible_default_ipv4.address}}
+  
+  - name: change password
+    ansible.builtin.user:
+      name: "{{username}}"
+      state: present
+      password: "{{password | password_hash('sha512')}}"
+    
